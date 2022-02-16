@@ -2,29 +2,44 @@
     <div class="row">
         <h1 class="text-center">New Homestay</h1>
         <div class="col-6 offset-3">
-            <form action="/homestays" method="POST">
+            <form action="/homestays" method="POST" novalidate class="validated-form">
                 <div class="mb-3">
                     <label class="form-label" for="title">Title</label>
-                    <input class="form-control" type="text" id="title" name="homestay[title]">
+                    <input class="form-control" type="text" id="title" name="homestay[title]" required>
+                    <div class="valid-feedback">
+                        Looks good!
+                    </div>
                 </div>
                 <div class="mb-3">
                     <label class="form-label" for="location">Location</label>
-                    <input class="form-control" type="text" id="location" name="homestay[location]">
+                    <input class="form-control" type="text" id="location" name="homestay[location]" required>
+                    <div class="valid-feedback">
+                        Looks good!
+                    </div>
                 </div>
                 <div class="mb-3">
                     <label class="form-label" for="image">Image Url</label>
-                    <input class="form-control" type="text" id="image" name="homestay[image]">
+                    <input class="form-control" type="text" id="image" name="homestay[image]" required>
+                    <div class="valid-feedback">
+                        Looks good!
+                    </div>
                 </div>
                 <div class="mb-3">
                     <label class="form-label" for="price">Homestay Price</label>
                     <div class="input-group">
                         <span class="input-group-text" id="price-label">&#8377;</span>
-                        <input type="text" class="form-control" id="price" placeholder="0.00" aria-label="price" aria-describedby="price-label" name="homestay[price]">
+                        <input type="text" class="form-control" id="price" placeholder="0.00" aria-label="price" aria-describedby="price-label" name="homestay[price]" required>
+                    </div>
+                    <div class="valid-feedback">
+                        Looks good!
                     </div>
                 </div>
                 <div class="mb-3">
                     <label class="form-label" for="description">Description</label>
-                    <textarea class="form-control" type="text" id="description" name="homestay[description]"></textarea>
+                    <textarea class="form-control" type="text" id="description" name="homestay[description]" required></textarea>
+                    <div class="valid-feedback">
+                        Looks good!
+                    </div>
                 </div>
                 <div class="mb-3">
                     <button class="btn btn-success">Add Homestay</button>
