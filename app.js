@@ -2,11 +2,12 @@ const express = require('express');
 const path = require('path');
 const mongoose = require('mongoose');
 const ejsMate = require('ejs-mate');
-const { homestaySchema } = require('./schemas.js');
+const { homestaySchema, reviewSchema } = require('./schemas.js');
 const catchAsync = require('./utils/catchAsync');
 const ExpressError = require('./utils/ExpressError');
 const methodOverride = require('method-override');
 const Homestay = require('./models/homestay');
+const Review = require('./models/review');
 
 mongoose.connect('mongodb://localhost:27017/home-stayd', {
     useNewUrlParser: true,
@@ -39,6 +40,16 @@ const validateHomestay = (req, res, next) => {
     }
 }
 
+const validateReview = (req, res, next) => {
+    const { error } = reviewSchema.validate(req.body);
+    if (error) {
+        const msg = error.details.map(el => el.message).join(',')
+        throw new ExpressError(msg, 400);
+    } else {
+        next();
+    }
+}
+
 
 app.get('/', (req, res) => {
     res.render('home');
@@ -60,7 +71,7 @@ app.post('/homestays', validateHomestay, catchAsync(async(req, res, next) => {
 }));
 
 app.get('/homestays/:id', catchAsync(async(req, res) => {
-    const homestay = await Homestay.findById(req.params.id);
+    const homestay = await Homestay.findById(req.params.id).populate('reviews');
     res.render('homestays/show', { homestay });
 }));
 
@@ -80,6 +91,22 @@ app.delete('/homestays/:id', catchAsync(async(req, res) => {
     await Homestay.findByIdAndDelete(id);
     res.redirect('/homestays');
 }));
+
+app.post('/homestays/:id/reviews', validateReview, catchAsync(async(req, res) => {
+    const homestay = await Homestay.findById(req.params.id);
+    const review = new Review(req.body.review);
+    homestay.reviews.push(review);
+    await review.save();
+    await homestay.save();
+    res.redirect(`/homestays/${homestay._id}`);
+}))
+
+app.delete('/homestays/:id/reviews/:reviewId', catchAsync(async(req, res) => {
+    const { id, reviewId } = req.params;
+    await Homestay.findByIdAndUpdate(id, { $pull: { reviews: reviewId } });
+    await Review.findByIdAndDelete(reviewId);
+    res.redirect(`/homestays/${id}`);
+}))
 
 app.all('*', (req, res, next) => {
     next(new ExpressError('Page Not Found', 404));
