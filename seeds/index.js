@@ -22,6 +22,7 @@ const seedDB = async() => {
         const random213 = Math.floor(Math.random() * 213);
         const price = Math.floor(Math.random() * 100) + 1000;
         const home = new Homestay({
+            author: '6265045710f61c9791d82152',
             location: `${cities[random213].City}, ${cities[random213].State}`,
             title: `${sample(descriptors)} ${sample(places)}`,
             image: 'https://source.unsplash.com/collection/483251',
