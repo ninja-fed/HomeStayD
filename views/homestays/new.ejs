@@ -2,7 +2,7 @@
     <div class="row">
         <h1 class="text-center">New Homestay</h1>
         <div class="col-6 offset-3">
-            <form action="/homestays" method="POST" novalidate class="validated-form">
+            <form action="/homestays" method="POST" novalidate class="validated-form" enctype="multipart/form-data">
                 <div class="mb-3">
                     <label class="form-label" for="title">Title</label>
                     <input class="form-control" type="text" id="title" name="homestay[title]" required>
@@ -17,13 +17,13 @@
                         Looks good!
                     </div>
                 </div>
-                <div class="mb-3">
+                <!-- <div class="mb-3">
                     <label class="form-label" for="image">Image Url</label>
                     <input class="form-control" type="text" id="image" name="homestay[image]" required>
                     <div class="valid-feedback">
                         Looks good!
                     </div>
-                </div>
+                </div> -->
                 <div class="mb-3">
                     <label class="form-label" for="price">Homestay Price</label>
                     <div class="input-group">
@@ -39,6 +39,12 @@
                     <textarea class="form-control" type="text" id="description" name="homestay[description]" required></textarea>
                     <div class="valid-feedback">
                         Looks good!
+                    </div>
+                </div>
+                <div class="mb-3">
+                    <div class="custom-file">
+                        <input type="file" class="custom-file-input" id="image" name="image" multiple>
+                        <label class="custom-file-label" for="image">Choose Image(s)...</label>
                     </div>
                 </div>
                 <div class="mb-3">

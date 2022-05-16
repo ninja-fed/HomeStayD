@@ -1,4 +1,5 @@
 const Homestay = require('../models/homestay');
+const { cloudinary } = require("../cloudinary");
 
 
 module.exports.index = async(req, res) => {
@@ -12,8 +13,10 @@ module.exports.renderNewForm = (req, res) => {
 
 module.exports.createHomestay = async(req, res, next) => {
     const homestay = new Homestay(req.body.homestay);
+    homestay.images = req.files.map(f => ({ url: f.path, filename: f.filename }));
     homestay.author = req.user._id;
     await homestay.save();
+    console.log(homestay);
     req.flash('success', 'Successfully made a new homestay!');
     res.redirect(`/homestays/${homestay._id}`);
 }
@@ -45,6 +48,15 @@ module.exports.renderEditForm = async(req, res) => {
 module.exports.updateHomestay = async(req, res) => {
     const { id } = req.params;
     const homestay = await Homestay.findByIdAndUpdate(id, {...req.body.homestay });
+    const imgs = req.files.map(f => ({ url: f.path, filename: f.filename }));
+    homestay.images.push(...imgs);
+    await homestay.save();
+    if (req.body.deleteImages) {
+        for (let filename of req.body.deleteImages) {
+            await cloudinary.uploader.destroy(filename);
+        }
+        await homestay.updateOne({ $pull: { images: { filename: { $in: req.body.deleteImages } } } })
+    }
     req.flash('success', 'Successfully updated homestay!');
     res.redirect(`/homestays/${homestay._id}`);
 }
