@@ -14,6 +14,8 @@ ImageSchema.virtual('thumbnail').get(function() {
     return this.url.replace('/upload', '/upload/w_300');
 });
 
+const opts = { toJSON: { virtuals: true } };
+
 const HomestaySchema = new Schema({
     title: String,
     images: [ImageSchema],
@@ -39,7 +41,13 @@ const HomestaySchema = new Schema({
         type: Schema.Types.ObjectId,
         ref: 'Review'
     }]
+}, opts);
+
+HomestaySchema.virtual('properties.popUpMarkup').get(function() {
+    return `<strong><a href="/homestays/${this._id}">${this.title}</a><strong>
+    <p>${this.description.substring(0, 20)}...</p>`
 });
+
 
 HomestaySchema.post('findOneAndDelete', async function(doc) {
     if (doc) {
