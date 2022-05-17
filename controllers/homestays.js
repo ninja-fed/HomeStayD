@@ -1,4 +1,7 @@
 const Homestay = require('../models/homestay');
+const mbxGeocoding = require("@mapbox/mapbox-sdk/services/geocoding");
+const mapBoxToken = process.env.MAPBOX_TOKEN;
+const geocoder = mbxGeocoding({ accessToken: mapBoxToken });
 const { cloudinary } = require("../cloudinary");
 
 
@@ -12,7 +15,12 @@ module.exports.renderNewForm = (req, res) => {
 }
 
 module.exports.createHomestay = async(req, res, next) => {
+    const geoData = await geocoder.forwardGeocode({
+        query: req.body.homestay.location,
+        limit: 1
+    }).send()
     const homestay = new Homestay(req.body.homestay);
+    homestay.geometry = geoData.body.features[0].geometry;
     homestay.images = req.files.map(f => ({ url: f.path, filename: f.filename }));
     homestay.author = req.user._id;
     await homestay.save();
